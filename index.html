@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Open source spatial ETL with Python and Apache Airflow</title>
+
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+		<link rel="stylesheet" href="css/ticks.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/monokai.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h2>My ideal ETL tool</h2>
+					<table>
+						<thead>
+							<tr>
+								<th></th>
+								<th>FME</th>
+								<th>Python</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="fragment" data-fragment-index="1">
+								<td>Easy to get started</td>
+								<td><div class="tick">✔</div></td>
+								<td><div class="cross">✘</div></td>
+							</tr>
+							<tr class="fragment" data-fragment-index="2">
+								<td>Job control GUI</td>
+								<td><div class="tick">✔</div></td>
+								<td><div class="cross">✘</div></td>
+							</tr>
+							<tr class="fragment" data-fragment-index="3"> 
+								<td>Open source</td>
+								<td><div class="cross">✘</div></td>
+								<td><div class="tick">✔</div></td>
+							</tr>
+							<tr class="fragment" data-fragment-index="4">
+								<td>Version controllable</td>
+								<td><div class="cross">✘</div></td>
+								<td><div class="tick">✔</div></td>
+							</tr>
+							<tr class="fragment" data-fragment-index="5">
+								<td>Automated tests</td>
+								<td><div class="cross">✘</div></td>
+								<td><div class="tick">✔</div></td>
+							</tr>
+						</tbody>
+					</table>
+				</section>
+				<section>
+					<h2>My ideal ETL tool</h2>
+					<table>
+						<thead>
+							<tr>
+								<th></th>
+								<th>FME</th>
+								<th>Python</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Easy to get started</td>
+								<td><span class="fragment step-fade-in-then-out"><div class="cross">✘</div></span><span class="fragment step-fade-in-then-out"><div class="tick">✔</div></span></td>
+								<td><div class="cross">✘</div></td>
+							</tr>
+							<tr>
+								<td>Job control GUI</td>
+								<td><div class="tick">✔</div></td>
+								<td><div class="cross">✘</div></td>
+							</tr>
+							</tr>
+							<tr> 
+								<td>Open source</td>
+								<td><div class="cross">✘</div></td>
+								<td><div class="tick">✔</div></td>
+							</tr>
+							<tr>
+								<td>Version controllable</td>
+								<td><div class="cross">✘</div></td>
+								<td><div class="tick">✔</div></td>
+							</tr>
+							<tr>
+								<td>Automated tests</td>
+								<td><div class="cross">✘</div></td>
+								<td><div class="tick">✔</div></td>
+							</tr>
+						</tbody>
+					</table>
+				</section>
+			</div>
+		</div>
+
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true }
+				]
+			});
+		</script>
+	</body>
+</html>
