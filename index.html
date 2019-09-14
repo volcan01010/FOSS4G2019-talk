@@ -36,7 +36,7 @@
 					<a href="https://www.bgs.ac.uk"><img src="http://www.bgs.ac.uk/images/bgs-colour-logo.svg" width=255 style="background:none; border:none; box-shadow:none;"></a>
 				</section>
 				<section>
-					<h1 line-height="10px">The<span style="color:#8dcffc;"><br> Freaking<br> Massive<br> Elephant<br></span>in the room</h1>
+					<h1 line-height="10px">There's a<span style="color:#8dcffc;"><br>Freaking<br>Massive<br>Elephant<br></span>in the room</h1>
 				</section>
 				<section>
 					<h2>My ideal ETL tool</h2>
@@ -79,17 +79,55 @@
 				</section>
 				<section data-markdown>
 					<textarea data-template>
-					<h2>ETL Helper</h2>
+					## ETL Helper
+
+					> A Python library to simplify database ...
+
+					[https://pypi.org/etlhelper](https://pypi.org/etlhelper)
+
+					<small>John A Stevenson (@volcan01010), Declan Valters (@dvalts), Jo Walsh (@ultrazool), Colin Blackburn (@ximenesuk)</small>
+
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
-					<h2>Get rows from database</h2>
+					## Get rows from database
+
+```python
+from etlhelper import DbParams, connect, get_rows
+
+PGDOCKER = DbParams(host="localhost", port="0000",
+                    database="pg_test_db",
+                    username="pg_test_user")
+
+ORADOCKER = DbParams(host="localhost", port="0000",
+                     database="pg_test_db",
+                     username="pg_test_user")
+
+sql = "SELECT * FROM src;"
+
+with connect(PGDOCKER, "PG_PASSWORD") as conn:
+    result = get_rows(sql, conn)
+```
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
-					<h2>Copy rows</h2>
+					## Copy rows
+
+```python
+from demo import PGDOCKER, ORADOCKER
+from etlhelper import connect, copy_rows
+
+select_sql = "SELECT (blah, blah) FROM src"
+insert_sql = "INSERT INTO dest (blah, blah)
+              VALUES (blah, blah)"
+
+with connect(ORADOCKER, "ORA_PASSWORD") as src_conn:
+    with connect(PGDOCKER, "PG_PASSWORD") as dest_conn:
+        copy_rows(select_sql, src_conn,
+                  insert_sql, dest_conn)
+```
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -204,7 +242,14 @@
 				</section>
 				<section data-markdown>
 					<textarea data-template>
-					<h2>Thank you</h2>
+					## Thank you
+
+
+```bash65chars
+             -------------------------------------
+             |       pip install etlhelper       |
+             -------------------------------------
+```
 					</textarea>
 				</section>
 			</div>
