@@ -33,7 +33,7 @@
 					<p>
 					<small><a href="https://twitter.com/volcan01010">Dr John A Stevenson</a> / <a href="https://twitter.com/volcan01010">@volcan01010</a></small>
 					</p>
-					<a href="https://www.bgs.ac.uk"><img src="http://www.bgs.ac.uk/images/bgs-colour-logo.svg" width=255 style="background:none; border:none; box-shadow:none;"></a>
+					<a href="https://www.bgs.ac.uk"><img src="http://www.bgs.ac.uk/images/bgs-colour-logo.svg" width=350 style="background:none; border:none; box-shadow:none;"></a>
 				</section>
 				<section>
 					<h1 line-height="10px">There's a<span style="color:#8dcffc;"><br>Freaking<br>Massive<br>Elephant<br></span>in the room</h1>
@@ -59,7 +59,7 @@
 								<td><div class="tick">✔</div></td>
 								<td><div class="cross">✘</div></td>
 							</tr>
-							<tr class="fragment" data-fragment-index="3"> 
+							<tr class="fragment" data-fragment-index="3">
 								<td>Open source</td>
 								<td><div class="cross">✘</div></td>
 								<td><div class="tick">✔</div></td>
@@ -91,24 +91,35 @@
 				</section>
 				<section data-markdown>
 					<textarea data-template>
-					## Get rows from database
+					## DbParams
 
 ```python
-from etlhelper import DbParams, connect, get_rows
-
-PGDOCKER = DbParams(host="localhost", port="0000",
-                    database="pg_test_db",
-                    username="pg_test_user")
+from etlhelper import DbParams
 
 ORADOCKER = DbParams(host="localhost", port="0000",
                      database="pg_test_db",
                      username="pg_test_user")
 
-sql = "SELECT * FROM src;"
+PGDOCKER = DbParams(host="localhost", port="0000",
+                    database="pg_test_db",
+                    username="pg_test_user")
+```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					## Get rows
 
-with connect(PGDOCKER, "PG_PASSWORD") as conn:
+```python
+from my_databases import ORADOCKER
+from etlhelper import connect, get_rows
+
+sql = "SELECT * FROM src"
+
+with connect(ORADOCKER, "ORA_PASSWORD") as conn:
     result = get_rows(sql, conn)
 ```
+Optional: encoding, params, row_factory
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -119,30 +130,83 @@ with connect(PGDOCKER, "PG_PASSWORD") as conn:
 from demo import PGDOCKER, ORADOCKER
 from etlhelper import connect, copy_rows
 
-select_sql = "SELECT (blah, blah) FROM src"
-insert_sql = "INSERT INTO dest (blah, blah)
-              VALUES (blah, blah)"
+select_sql = "SELECT id, name FROM src"
+insert_sql = "INSERT INTO dest (id, name)
+              VALUES (%(id)s, %(name)s)"
 
-with connect(ORADOCKER, "ORA_PASSWORD") as src_conn:
-    with connect(PGDOCKER, "PG_PASSWORD") as dest_conn:
-        copy_rows(select_sql, src_conn,
-                  insert_sql, dest_conn)
+src_conn = connect(ORADOCKER, "ORA_PASSWORD")
+dest_conn = connect(PGDOCKER, "PG_PASSWORD")
+
+copy_rows(select_sql, src_conn, insert_sql, dest_conn)
 ```
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
-					<h2>Transform data</h2>
+					## Transform data
+```python
+def my_transform(chunk):
+    # Append external_value and filter rows less than 301.
+    counter = (x for x in range(300, 310))
+    new_chunk = []
+
+    for row in chunk:
+        external_value = next(counter)
+        if external_value >= 302:
+            new_chunk.append((*row, external_value))
+
+    return new_chunk
+
+copy_rows(select_sql, src_conn, insert_sql, dest_conn
+          transform=my_transform)
+```
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
-					<h2>Spatial ETL</h2>
+					## Spatial ETL
+```python
+select_sql_oracle = """
+    SELECT
+      id,
+      SDO_UTIL.TO_WKBGEOMETRY(geom)
+    FROM src
+    """
+
+insert_sql_postgis = """
+    INSERT INTO dest (id, geom) VALUES (
+      %s,
+      ST_Transform(ST_GeomFromWKB(%s), 27700)
+    )
+    """
+```
+
+See also: [ogr2ogr](https://gdal.org/programs/ogr2ogr.html) and [Shapely](https://pypi.org/project/Shapely/)
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
-					<h2>An ETL script</h2>
+					## An ETL script
+```python
+from my_databases import ORADOCKER, PGDOCKER
+from etl_helper import connect, copy_rows
+
+SELECT_SQL = "..."
+INSERT_SQL = "..."
+
+def my_transform(chunk):
+    ...
+
+def copy_src_to_dest():
+    with connect(ORADOCKER, "ORA_PASSWORD") as src_conn:
+        with connect(PGDOCKER, "PG_PASSWORD") as dest_conn:
+            copy_rows(SELECT_SQL, src_conn,
+                      INSERT_SQL, dest_conn,
+                      transform=my_transform)
+
+if __name__ == "__main__":
+    copy_src_to_dest()
+```
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -182,7 +246,7 @@ with connect(ORADOCKER, "ORA_PASSWORD") as src_conn:
 								<td><div class="cross">✘</div></td>
 							</tr>
 							</tr>
-							<tr> 
+							<tr>
 								<td>Open source</td>
 								<td><div class="cross">✘</div></td>
 								<td><div class="tick">✔</div></td>
@@ -246,9 +310,16 @@ with connect(ORADOCKER, "ORA_PASSWORD") as src_conn:
 
 
 ```bash65chars
-             -------------------------------------
-             |       pip install etlhelper       |
-             -------------------------------------
+
+             ----------------------------------
+            |       pip install etlhelper      |
+             ----------------------------------
+                   \   ^__^
+                    \  (oo)\_______
+                       (__)\       )\/\
+                           ||----w |
+                           ||     ||
+
 ```
 					</textarea>
 				</section>
