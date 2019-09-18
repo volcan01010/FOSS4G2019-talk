@@ -107,7 +107,7 @@ PGDOCKER = DbParams(host="localhost", port=5432,
 					</textarea>
 				</section>
 				<section data-markdown>
-					<textarea data-template>
+					<textarea data-template class="fragment" data-fragment-index="1">
 					## Get rows
 
 ```python
@@ -120,6 +120,11 @@ with connect(ORADOCKER, "ORA_PASSWORD") as conn:
     result = get_rows(sql, conn)
 ```
 <small>Optional: encoding, params, row_factory</small>
+```
+[Row(id=1, value=1.234, simple_text='text', utf8_text='Öæ°\nz', day=datetime.date(2018, 12, 7), date_time=datetime.datetime(2018, 12, 7, 13, 1, 59)),
+ Row(id=2, value=2.234, simple_text='text', utf8_text='Öæ°\nz', day=datetime.date(2018, 12, 8), date_time=datetime.datetime(2018, 12, 8, 13, 1, 59)),
+ Row(id=3, value=2.234, simple_text='text', utf8_text='Öæ°\nz', day=datetime.date(2018, 12, 9), date_time=datetime.datetime(2018, 12, 9, 13, 1, 59))]
+```
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -132,7 +137,7 @@ from etlhelper import connect, copy_rows
 
 select_sql = "SELECT id, name FROM src"
 insert_sql = "INSERT INTO dest (id, name)
-              VALUES (%(id)s, %(name)s)"
+              VALUES (%s, %s)"
 
 src_conn = connect(ORADOCKER, "ORA_PASSWORD")
 dest_conn = connect(PGDOCKER, "PG_PASSWORD")
@@ -257,9 +262,9 @@ t1.set_upstream(latest_only)
 import copy_readings
 
 def copy_readings_with_args(**kwargs):
-    start = kwargs.get('prev_execution_date')
-    end = kwargs.get('execution_date')
-    copy_readings.copy_readings(startdate, enddate)
+    start_date = kwargs.get('prev_execution_date')
+    end_date = kwargs.get('execution_date')
+    copy_readings.copy_readings(start_date, end_date)
 
 t3 = PythonOperator(
     task_id='copy_readings',
