@@ -96,11 +96,11 @@
 ```python
 from etlhelper import DbParams
 
-ORADOCKER = DbParams(host="localhost", port=1521,
+ORA_INTERNAL = DbParams(host="localhost", port=1521,
                      database="privatedata",
                      username="oracle_user")
 
-PGDOCKER = DbParams(host="localhost", port=5432,
+PG_EXTERNAL = DbParams(host="localhost", port=5432,
                     database="publicdata",
                     username="pg_user")
 ```
@@ -111,12 +111,12 @@ PGDOCKER = DbParams(host="localhost", port=5432,
 					## Get rows
 
 ```python
-from my_databases import ORADOCKER
+from my_databases import ORA_INTERNAL
 from etlhelper import connect, get_rows
 
 sql = "SELECT * FROM src"
 
-with connect(ORADOCKER, "ORA_PASSWORD") as conn:
+with connect(ORA_INTERNAL, "ORA_PASSWORD") as conn:
     result = get_rows(sql, conn)
 ```
 <small>Optional: encoding, params, row_factory</small>
@@ -132,15 +132,15 @@ with connect(ORADOCKER, "ORA_PASSWORD") as conn:
 					## Copy rows
 
 ```python
-from demo import PGDOCKER, ORADOCKER
+from my_databases import PG_EXTERNAL, ORA_INTERNAL
 from etlhelper import connect, copy_rows
 
 select_sql = "SELECT id, name FROM src"
 insert_sql = "INSERT INTO dest (id, name)
               VALUES (%s, %s)"
 
-src_conn = connect(ORADOCKER, "ORA_PASSWORD")
-dest_conn = connect(PGDOCKER, "PG_PASSWORD")
+src_conn = connect(ORA_INTERNAL, "ORA_PASSWORD")
+dest_conn = connect(PG_EXTERNAL, "PG_PASSWORD")
 
 copy_rows(select_sql, src_conn, insert_sql, dest_conn)
 ```
@@ -194,7 +194,7 @@ See also: [ogr2ogr](https://gdal.org/programs/ogr2ogr.html) and [Shapely](https:
 					<textarea data-template>
 					## An ETL script
 ```python
-from my_databases import ORADOCKER, PGDOCKER
+from my_databases import ORA_INTERNAL, PG_EXTERNAL
 from etl_helper import connect, copy_rows
 
 DELETE_SQL = "..."
@@ -202,8 +202,8 @@ SELECT_SQL = "..."
 INSERT_SQL = "..."
 
 def copy_src_to_dest():
-    with connect(ORADOCKER, "ORA_PASSWORD") as src_conn:
-        with connect(PGDOCKER, "PG_PASSWORD") as dest_conn:
+    with connect(ORA_INTERNAL, "ORA_PASSWORD") as src_conn:
+        with connect(PG_EXTERNAL, "PG_PASSWORD") as dest_conn:
             execute(DELETE_SQL, dest_conn)
             copy_rows(SELECT_SQL, src_conn,
                       INSERT_SQL, dest_conn)
