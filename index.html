@@ -83,7 +83,7 @@
 
 					> ETL Helper is a Python library to simplify data transfer between databases
 
-					[https://pypi.org/projects/etlhelper](https://pypi.org/projects/etlhelper)
+					[https://pypi.org/project/etlhelper](https://pypi.org/project/etlhelper)
 
 					<small>John A Stevenson (@volcan01010), Declan Valters (@dvalts), Jo Walsh (@ultrazool), Colin Blackburn (@ximenesuk)</small>
 
@@ -97,12 +97,12 @@
 from etlhelper import DbParams
 
 ORA_INTERNAL = DbParams(host="localhost", port=1521,
-                     database="privatedata",
-                     username="oracle_user")
+                        database="privatedata",
+                        username="oracle_user")
 
 PG_EXTERNAL = DbParams(host="localhost", port=5432,
-                    database="publicdata",
-                    username="pg_user")
+                       database="publicdata",
+                       username="pg_user")
 ```
 					</textarea>
 				</section>
@@ -119,7 +119,7 @@ sql = "SELECT * FROM src"
 with connect(ORA_INTERNAL, "ORA_PASSWORD") as conn:
     result = get_rows(sql, conn)
 ```
-<small>Optional: encoding, params, row_factory</small>
+<small>Optional: params, row_factory</small>
 ```
 [Row(id=1, value=1.234, simple_text='text', utf8_text='Öæ°\nz', day=datetime.date(2018, 12, 7), date_time=datetime.datetime(2018, 12, 7, 13, 1, 59)),
  Row(id=2, value=2.234, simple_text='text', utf8_text='Öæ°\nz', day=datetime.date(2018, 12, 8), date_time=datetime.datetime(2018, 12, 8, 13, 1, 59)),
@@ -153,13 +153,14 @@ copy_rows(select_sql, src_conn, insert_sql, dest_conn)
 import random
 
 def my_transform(chunk):
-    # Append random integer (1-10), filter if <5.
+    # Append random integer (0-9), filter if <5.
 
     new_chunk = []
     for row in chunk:
         external_value = random.randrange(10)
-        if external_value >= 6:
-            new_chunk.append((*row, external_value))
+        if external_value < 5:
+            continue  # Skip forward to next row
+        new_chunk.append((*row, external_value))
 
     return new_chunk
 
